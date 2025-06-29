@@ -1,98 +1,117 @@
 # PCOScope
 
-PCOScope is a machine-learning-based diagnostic and explainability toolkit designed to assist in the early prediction of Polycystic Ovary Syndrome (PCOS) using clinical and ultrasound data. The project implements supervised classification models to predict PCOS presence and explores explainable AI (XAI) methods to increase transparency of model decisions.
+A machine learning pipeline to diagnose Polycystic Ovary Syndrome (PCOS) and explore infertility patterns using clinical and ultrasound data, supported by explainable AI techniques.
 
 ---
 
-## Problem Statement
+## Table of Contents
 
-PCOS is a common hormonal disorder among women of reproductive age. Early prediction and explanation of PCOS patterns can help guide timely treatment. This project leverages a real-world medical dataset to build an interpretable machine learning pipeline for PCOS diagnosis, including potential markers related to infertility.
+- [Project Overview](#project-overview)
+- [Technical Approach](#technical-approach)
+  - [Data Preprocessing](#data-preprocessing)
+  - [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
+  - [Model Building](#model-building)
+  - [Explainable AI](#explainable-ai)
+- [Results](#results)
+- [Requirements](#requirements)
+- [How to Run](#how-to-run)
+- [Future Scope](#future-scope)
+- [License](#license)
 
 ---
 
-## Dataset
+## Project Overview
 
-- **Source**: PCOS dataset (without infertility) + infertility data (merged)
-- **Format**: `.xlsx` and `.csv`
-- **Features**: 45 clinical, hormonal, and ultrasound attributes
-- **Target**: PCOS diagnosis (`PCOS (Y/N)`)
+PCOScope is an end-to-end data science workflow to detect PCOS and analyze related infertility factors in women. It uses a Random Forest classifier with hyperparameter tuning, and includes explainable AI (SHAP) to identify the most influential features affecting PCOS prediction.
 
 ---
 
-## Technical Overview
+## Technical Approach
 
 ### Data Preprocessing
 
-- Loaded data from Excel and CSV
-- Merged infertility and non-infertility patient records
-- Removed duplicate entries and cleaned missing values
-- Detected and removed obvious outliers based on domain knowledge (e.g., implausible BP, hormone, and follicle values)
-- Encoded categorical variables
+- Merged two datasets: one with PCOS patients and one without infertility
+- Handled missing values
+- Dropped irrelevant columns
+- Removed outliers based on clinical domain knowledge
+- Encoded categorical features
+- Ensured consistent datatypes
 
 ### Exploratory Data Analysis (EDA)
 
-- Examined:
-  - Menstrual cycle length
-  - Body Mass Index (BMI) patterns
-  - Menstrual irregularity
-  - Follicle numbers (left and right)
-- Heatmaps used to identify highly correlated features
-- Visualized correlations with PCOS using Seaborn and Matplotlib
-- Concluded follicle count is a highly significant predictor of PCOS
+- Correlation heatmaps to select relevant features
+- Visualization of patterns in:
+  - menstrual cycle length
+  - BMI distributions
+  - follicle counts
+  - lifestyle attributes
+- Distribution plots for feature understanding
 
-### Modeling
+### Model Building
 
-- Random Forest Classifier
-- Baseline model trained with default hyperparameters
-- Performed hyperparameter tuning using GridSearchCV
-  - Explored parameters such as:
-    - n_estimators
-    - max_depth
-    - min_samples_split
-    - min_samples_leaf
-    - bootstrap
-  - 5-fold cross-validation
-- Achieved tuned accuracy of ~90% on test set
-- Used a confusion matrix and classification report for evaluation
+- Features (`X`) and target (`y`) assigned
+- Training and test splits (70-30)
+- Baseline Random Forest classifier
+- GridSearchCV for hyperparameter tuning
+- Final best Random Forest trained on optimal hyperparameters
+- Evaluation via accuracy, confusion matrix, classification report
 
----
+### Explainable AI
 
-## Explainable AI (XAI)
-
-Explainability was explored to help clinicians trust the machine learning pipeline. The SHAP (SHapley Additive exPlanations) library was considered to attribute model outputs to input features. Due to package conflicts, a full SHAP analysis was not completed, but the planned workflow included:
-
-- Using SHAP TreeExplainer with the Random Forest model
-- Generating SHAP summary plots (bar and beeswarm) to identify feature importance
-- Providing model transparency, especially around the strong influence of follicle counts on PCOS diagnosis
-
-This can be added in future work after environment dependencies are resolved.
+- SHAP (SHapley Additive exPlanations) was integrated to explain Random Forest predictions
+- Identified that *follicle number (both left and right)* had the highest predictive contribution
+- Visualized feature importances using summary plots
 
 ---
 
 ## Results
 
-- Baseline Random Forest accuracy: ~88%
-- Tuned Random Forest accuracy: ~90%
-- F1-score for PCOS class: ~0.84
-- Highest correlated features: Follicle counts, LH, BMI
-- The model showed strong generalization performance on unseen data
+- Final tuned Random Forest achieved ~90% accuracy on test data
+- Confusion matrix showed strong sensitivity and specificity for PCOS diagnosis
+- SHAP interpretability highlighted follicle counts as the most crucial predictor, aligning with clinical findings
 
 ---
 
-## Future Work
+## Requirements
 
-- Resolve SHAP visualization dependencies and integrate full model explainability
-- Test additional XAI frameworks like LIME or counterfactuals
-- Deploy the model with a simple Flask or Streamlit frontend for demonstration
-- Expand to larger or multi-institution PCOS datasets
+All dependencies are specified in `requirements.txt`.
+
+Install them with:
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
 ## How to Run
 
-1. Clone the repository
-2. Install the dependencies:
-
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/PCOScope.git
+   ```
+2. Navigate into the project folder:
+   ```bash
+   cd PCOScope
+   ```
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
-3.jupyter notebook pcos-diagnosis.ipynb
+   ```
+4. Launch the Jupyter Notebook to run the pipeline:
+   ```bash
+   jupyter notebook
+   ```
+   and open `pcos-diagnosis.ipynb`.
+
+---
+
+## Future Scope
+
+- Add cross-validation on multiple ML algorithms (XGBoost, LightGBM)
+- Incorporate additional clinical variables
+- Extend interpretability using LIME or advanced SHAP visualizations
+- Deploy as a simple web app for demonstration
+
+---
+
